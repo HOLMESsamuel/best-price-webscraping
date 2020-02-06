@@ -14,16 +14,16 @@ import time
 browser = webdriver.Chrome('chromedriver.exe')
 
 url = "https://www.amazon.fr/"
+header = {'User-Agent' : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"} 
 
 
-def getHTML(url):
-    page = requests.get(url)
+def getHTML(url, header):
+    page = requests.get(url, headers=header)
     soup = BeautifulSoup(page.content, "html.parser")
     return(soup)
 
 def openURL(url):
     browser.get(url)
-    time.sleep(2)
 
 openURL(url)
 
@@ -31,14 +31,19 @@ def search(keyword, browser):
     search = browser.find_element_by_id('twotabsearchtextbox')
     search.send_keys(keyword)
     search.send_keys(Keys.ENTER)
-    time.sleep(3)
 
 
-def getContent(browser):
-    soup = getHTML(browser.current_url)
-    mydivs = soup.findAll("div", {"class": "sg-col-inner"})
+def getContent(browser, header, type, selector):
+    soup = getHTML(browser.current_url, header)
+    mydivs = soup.findAll(type, {"class": selector})
     return(mydivs)
 
 search("the witcher", browser)
-print(getContent(browser))
+prices = getContent(browser, header, "span", "a-price-whole")
+titles = getContent(browser, header, "span", "a-size-medium a-color-base a-text-normal")
+
+for price, title in zip(prices, titles):
+    print(price.text, title.text)
+
+browser.quit()
 
