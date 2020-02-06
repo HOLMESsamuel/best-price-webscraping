@@ -23,13 +23,22 @@ def getHTML(url):
 
 def openURL(url):
     browser.get(url)
-    time.sleep(5)
+    time.sleep(2)
 
 openURL(url)
 
-search = browser.find_element_by_id('twotabsearchtextbox')
-search.send_keys("the witcher")
-search.send_keys(Keys.ENTER)
-time.sleep(3)
-print (browser.current_url)
-browser.quit()
+def search(keyword, browser):
+    search = browser.find_element_by_id('twotabsearchtextbox')
+    search.send_keys(keyword)
+    search.send_keys(Keys.ENTER)
+    time.sleep(3)
+
+
+def getContent(browser):
+    soup = getHTML(browser.current_url)
+    mydivs = soup.findAll("div", {"class": "sg-col-inner"})
+    return(mydivs)
+
+search("the witcher", browser)
+print(getContent(browser))
+
