@@ -28,7 +28,7 @@ def openURL(url):
 
 
 
-def search(origin, destination,age, browser):
+def search(origin, destination, age, aller, browser):
     search = browser.find_element_by_id('vsb-origin-train-launch')
     search.send_keys(origin)
     time.sleep(3)
@@ -41,6 +41,17 @@ def search(origin, destination,age, browser):
     select.select_by_visible_text('12-25 ans')
     search = browser.find_element_by_id('passenger_1_train-launch-typos-in-card_age')
     search.send_keys(age)
+    button = browser.find_element_by_id('vsb-dates-dialog-train-launch-aller-retour-1')
+    button.click()
+    time.sleep(1)
+    button = browser.find_element_by_id('train-launch-d-'+aller)
+    button.click()
+    time.sleep(1)
+    button = browser.find_element_by_id('vsb-datepicker-train-launch-aller-retour-submit')
+    button.click()
+    
+    
+    
     
 
 
@@ -52,6 +63,7 @@ def getContent(browser, header, type, selector):
 
 
 openURL(url)
-search("Gare de l'Est (Paris) (Île-de-France)", "Metz Ville (Grand Est)","21", browser)
-
+search("Gare de l'Est (Paris) (Île-de-France)", "Metz Ville (Grand Est)","21","13-02-2020", browser)
+time.sleep(20)
+browser.quit()
 
