@@ -1,2 +1,2 @@
-# best-price-webscraping
-A python webscraping program to find the best price of a product on different websites.
+# train-webscraping
+A python webscraping program to search for a free train on sncf's website.
