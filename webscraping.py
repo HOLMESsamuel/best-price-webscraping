@@ -23,11 +23,7 @@ def getHTML(url, header):
     soup = BeautifulSoup(page.content, "html.parser")
     return(soup)
 
-def openURL(url):
-    browser.get(url)
-
-
-
+    
 def search(origin, destination, age, aller, browser):
     search = browser.find_element_by_id('vsb-origin-train-launch')
     search.send_keys(origin)
@@ -49,6 +45,24 @@ def search(origin, destination, age, aller, browser):
     time.sleep(1)
     button = browser.find_element_by_id('vsb-datepicker-train-launch-aller-retour-submit')
     button.click()
+    time.sleep(1)
+    button = browser.find_element_by_id('vsb-passenger_1_train-launch-options-button')
+    button.click()
+    select = Select(browser.find_element_by_id('passenger_1_train-launch-discount-card-type'))
+    select.select_by_visible_text('TGVmax')
+    time.sleep(1)
+    search = browser.find_element_by_id('passenger_1_train-launch-discount-card-dateofbirth')
+    search.send_keys('06/03/1998')
+    search = browser.find_element_by_id('passenger_1_train-launch-discount-card-number')
+    search.send_keys('123456789')
+    time.sleep(1)
+    button = browser.find_element_by_class_name('oui-button__content___42122')
+    button.click()
+    
+    
+
+    
+
     
     
     
@@ -62,8 +76,8 @@ def getContent(browser, header, type, selector):
 
 
 
-openURL(url)
-search("Gare de l'Est (Paris) (Île-de-France)", "Metz Ville (Grand Est)","21","13-02-2020", browser)
+browser.get(url)
+search("Gare de l'Est (Paris) (Île-de-France)", "Metz Ville (Grand Est)","21","16-02-2020", browser)
 time.sleep(20)
-browser.quit()
+#browser.quit()
 
