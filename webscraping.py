@@ -11,7 +11,9 @@ from selenium.webdriver.support.ui import Select
 
 import time
 
-
+#my favorite destinations
+paris = "Gare de l'Est (Paris) (Île-de-France)"
+metz = "Metz Ville (Grand Est)"
 browser = webdriver.Chrome('chromedriver.exe')
 
 url = "https://www.oui.sncf/"
@@ -23,51 +25,53 @@ def getHTML(url, header):
     soup = BeautifulSoup(page.content, "html.parser")
     return(soup)
 
+def click_on_button(browser, selector):
+    try:
+        button = browser.find_element_by_id(selector)
+    except:
+        button = browser.find_element_by_class_name(selector)
+    button.click()
+
+def fill_text_area(browser, selector, text, click=True):
+    try:
+        text_area = browser.find_element_by_id(selector)
+    except:
+        text_area = browser.find_element_by_class_name(selector)
+    text_area.send_keys(text)
+    time.sleep(1)
+    if(click):
+        text_area.send_keys(Keys.ENTER)
+
+def select_option(browser, selector, option):
+    try:
+        select = Select(browser.find_element_by_id(selector))
+    except:
+        select = Select(browser.find_element_by_class_name(selector))
+    select.select_by_visible_text(option)
     
+  
 def search(origin, destination, age, aller, browser):
-    search = browser.find_element_by_id('vsb-origin-train-launch')
-    search.send_keys(origin)
-    time.sleep(3)
-    search.send_keys(Keys.ENTER)
-    search = browser.find_element_by_id('vsb-destination-train-launch')
-    search.send_keys(destination)
-    time.sleep(3)
-    search.send_keys(Keys.ENTER)
-    select = Select(browser.find_element_by_id('passenger_1_train-launch-typos-in-card-typology'))
-    select.select_by_visible_text('12-25 ans')
-    search = browser.find_element_by_id('passenger_1_train-launch-typos-in-card_age')
-    search.send_keys(age)
-    button = browser.find_element_by_id('vsb-dates-dialog-train-launch-aller-retour-1')
-    button.click()
+    fill_text_area(browser, 'vsb-origin-train-launch', origin)
+    fill_text_area(browser, 'vsb-destination-train-launch', destination)
+    select_option(browser, 'passenger_1_train-launch-typos-in-card-typology', '12-25 ans')
+    fill_text_area(browser,'passenger_1_train-launch-typos-in-card_age', age, False)
+    click_on_button(browser, "vsb-dates-dialog-train-launch-aller-retour-1")
     time.sleep(1)
-    button = browser.find_element_by_id('train-launch-d-'+aller)
-    button.click()
+    click_on_button(browser, 'train-launch-d-'+aller)
     time.sleep(1)
-    button = browser.find_element_by_id('vsb-datepicker-train-launch-aller-retour-submit')
-    button.click()
+    click_on_button(browser, 'vsb-datepicker-train-launch-aller-retour-submit')
     time.sleep(1)
-    button = browser.find_element_by_id('vsb-passenger_1_train-launch-options-button')
-    button.click()
-    select = Select(browser.find_element_by_id('passenger_1_train-launch-discount-card-type'))
-    select.select_by_visible_text('TGVmax')
+    click_on_button(browser, 'vsb-passenger_1_train-launch-options-button')
+    select_option(browser, 'passenger_1_train-launch-discount-card-type', 'TGVmax')
     time.sleep(1)
-    search = browser.find_element_by_id('passenger_1_train-launch-discount-card-dateofbirth')
-    search.send_keys('06/03/1998')
-    search = browser.find_element_by_id('passenger_1_train-launch-discount-card-number')
-    search.send_keys('123456789')
+    fill_text_area(browser, 'passenger_1_train-launch-discount-card-dateofbirth', "06/03/1998")
+    fill_text_area(browser, 'passenger_1_train-launch-discount-card-number', '500358789')
+    click_on_button(browser, 'oui-modal__close-light___42122')
     time.sleep(1)
-    button = browser.find_element_by_class_name('oui-button__content___42122')
-    button.click()
-    
-    
-
-    
-
+    click_on_button(browser, 'vsb-booking-train-launch-submit')
     
     
     
-    
-
 
 def getContent(browser, header, type, selector):
     soup = getHTML(browser.current_url, header)
@@ -77,7 +81,8 @@ def getContent(browser, header, type, selector):
 
 
 browser.get(url)
-search("Gare de l'Est (Paris) (Île-de-France)", "Metz Ville (Grand Est)","21","16-02-2020", browser)
+browser.maximize_window()
+search(paris, metz,"21","19-02-2020", browser)
 time.sleep(20)
 #browser.quit()
 
